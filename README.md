@@ -1,5 +1,7 @@
 # Neon-Network-Defense-3D
 
+![Neon Network Defense 3D](assets/neon-network-defense-3d.png)
+
 ## Objective
 
 Defend your central Core from enemy vehicles that spawn in waves. Build towers, connect them to the core to gain energy, and survive as long as possible!
