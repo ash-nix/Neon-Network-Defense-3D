@@ -1,6 +1,8 @@
-# Neon-Network-Defense-3D
+# [Neon Network Defense 3D](https://ash-nix.github.io/Neon-Network-Defense-3D/)
 
 ![Neon Network Defense 3D](assets/neon-network-defense-3d.png)
+
+### [Play](https://ash-nix.github.io/Neon-Network-Defense-3D/)
 
 ## Objective
 
