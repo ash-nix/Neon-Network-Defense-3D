@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Network Defense 3D</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+
+<body>
+
+    <div id="connect-indicator">CONNECT MODE ACTIVE: Select two nodes to link</div>
+
+    <div id="ui-layer">
+        <div class="stat-box" id="energy-box">
+            <div class="stat-label">Network Energy</div>
+            <div class="stat-value" id="energy-display">300</div>
+        </div>
+        <div class="stat-box" style="border-color: #ff3333;">
+            <div class="stat-label">Core Integrity</div>
+            <div class="stat-value" id="health-display">100%</div>
+        </div>
+        <div class="stat-box" style="border-color: #ffaa00;">
+            <div class="stat-label">Wave / Status</div>
+            <div class="stat-value" id="wave-display">Ready</div>
+        </div>
+        <div class="stat-box" id="enemy-stat-box" style="border-color: #ff5500; display: none;">
+            <div class="stat-label">Hostiles Remaining</div>
+            <div class="stat-value" id="enemy-count-display">0</div>
+        </div>
+    </div>
+
+    <div id="upgrade-panel">
+        <div class="upgrade-header">
+            <div id="up-title" style="font-weight: bold; color: #00f0ff; letter-spacing: 1px;">CORE</div>
+            <div id="up-lvl" style="font-size: 0.75rem; color: #888;">Level 1</div>
+        </div>
+
+        <div id="up-stats-container">
+            <!-- Stats populated via JS -->
+        </div>
+
+        <button class="upgrade-btn" id="up-confirm">UPGRADE (150)</button>
+        <button id="sell-btn" class="sell-btn" onclick="sellSelected()">DECOMMISSION</button>
+        <button
+            style="background:none; border:none; color:#555; cursor:pointer; font-size:0.75rem; margin-top:5px; text-decoration: underline;"
+            onclick="hideUpgrade()">CANCEL</button>
+    </div>
+
+    <div id="help-panel">
+        <div
+            style="font-weight: bold; color: #00f0ff; letter-spacing: 1px; margin-bottom: 20px; text-align: center; font-size: 1.2rem;">
+            NEON NETWORK DEFENSE - HELP</div>
+
+        <div style="max-height: 400px; overflow-y: auto; line-height: 1.6;">
+            <div style="margin-bottom: 20px;">
+                <div style="color: #00f0ff; font-weight: bold; margin-bottom: 8px;">OBJECTIVE</div>
+                <div style="color: #ccc; font-size: 0.9rem;">Defend your central Core from enemy vehicles that spawn in
+                    waves. Build towers, connect them to the core to gain energy, and survive as long as possible!</div>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <div style="color: #00f0ff; font-weight: bold; margin-bottom: 8px;">CONTROLS</div>
+                <div style="color: #ccc; font-size: 0.9rem;">
+                    • <strong>DRAG:</strong> Rotate camera<br>
+                    • <strong>SCROLL:</strong> Zoom in/out<br>
+                    • <strong>CLICK GRID:</strong> Place tower hologram<br>
+                    • <strong>CLICK AGAIN:</strong> Confirm tower placement<br>
+                    • <strong>CLICK TOWERS:</strong> Select and upgrade
+                </div>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <div style="color: #00f0ff; font-weight: bold; margin-bottom: 8px;">TOWER TYPES</div>
+                <div style="color: #ccc; font-size: 0.9rem;">
+                    • <strong style="color: #00f0ff;">RIFLE:</strong> Fast-firing basic turret (50 energy)<br>
+                    • <strong style="color: #00ff88;">CANNON:</strong> High damage, slow fire (100 energy)<br>
+                    • <strong style="color: #ffaa00;">ROCKET:</strong> Area damage splash (180 energy)<br>
+                    • <strong style="color: #ff00ff;">SNIPER:</strong> Long range, high damage (350 energy)<br>
+                    • <strong style="color: #ff3333;">SILO:</strong> Nuclear missile launcher (1000+ energy)
+                </div>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <div style="color: #00f0ff; font-weight: bold; margin-bottom: 8px;">ENERGY SYSTEM</div>
+                <div style="color: #ccc; font-size: 0.9rem;">
+                    • Core generates energy automatically<br>
+                    • Towers need energy to fire<br>
+                    • Connect towers with CONNECT mode for energy sharing<br>
+                    • Energy flows from Core outward through connections<br>
+                    • Gatherers collect energy shards from defeated enemies
+                </div>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <div style="color: #00f0ff; font-weight: bold; margin-bottom: 8px;">UPGRADING</div>
+                <div style="color: #ccc; font-size: 0.9rem;">
+                    • Click any tower or Core to see upgrade options<br>
+                    • Upgrades increase damage, range, and fire rate<br>
+                    • Core upgrades boost energy generation and repair<br>
+                    • Higher level towers get visual improvements
+                </div>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <div style="color: #00f0ff; font-weight: bold; margin-bottom: 8px;">SPECIAL MODES</div>
+                <div style="color: #ccc; font-size: 0.9rem;">
+                    • <strong>CONNECT MODE:</strong> Link towers for energy distribution<br>
+                    <div id="sandbox-info">• <strong>SANDBOX MODE:</strong> Unlimited energy for testing<br></div>
+                    • <strong>Wave System:</strong> Enemies get stronger each wave
+                </div>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <div style="color: #00f0ff; font-weight: bold; margin-bottom: 8px;">STRATEGY TIPS</div>
+                <div style="color: #ccc; font-size: 0.9rem;">
+                    • Build a network of connected towers early<br>
+                    • Mix different tower types for varied defense<br>
+                    • Upgrade your Core to increase energy output<br>
+                    • Position towers to cover approach paths<br>
+                    • Use Rocket towers for groups of enemies<br>
+                    • Save energy for critical moments
+                </div>
+            </div>
+        </div>
+
+        <button
+            style="background:none; border:none; color:#555; cursor:pointer; font-size:0.75rem; margin-top:15px; text-decoration: underline;"
+            onclick="toggleHelp()">CLOSE HELP</button>
+    </div>
+
+    <div id="instructions">
+        DRAG: Rotate | SCROLL: Zoom<br>
+        CLICK GRID: Place Hologram | CLICK AGAIN: Confirm Build
+    </div>
+
+    <div id="msg" class="msg-box"></div>
+
+    <div id="toolbar">
+        <div class="tower-btn" id="btn-RIFLE" onclick="selectTower('RIFLE')">
+            <div class="tower-icon">🔫</div>
+            <div class="tower-name">RIFLE</div>
+            <div class="tower-cost">50</div>
+        </div>
+        <div class="tower-btn" id="btn-CANNON" onclick="selectTower('CANNON')">
+            <div class="tower-icon">💣</div>
+            <div class="tower-name">CANNON</div>
+            <div class="tower-cost">100</div>
+        </div>
+        <div class="tower-btn" id="btn-ROCKET" onclick="selectTower('ROCKET')">
+            <div class="tower-icon">🚀</div>
+            <div class="tower-name">ROCKET</div>
+            <div class="tower-cost">180</div>
+        </div>
+        <div class="tower-btn" id="btn-SNIPER" onclick="selectTower('SNIPER')">
+            <div class="tower-icon">🎯</div>
+            <div class="tower-name">SNIPER</div>
+            <div class="tower-cost">350</div>
+        </div>
+        <div class="tower-btn" id="btn-SILO" onclick="selectTower('SILO')">
+            <div class="tower-icon">☢️</div>
+            <div class="tower-name">SILO</div>
+            <div id="cost-SILO" class="tower-cost">1000</div>
+        </div>
+        <div style="width: 1px; height: 40px; background: #444; margin: 0 2px;"></div>
+        <button id="connect-btn" class="toggle-btn" onclick="toggleConnectMode()">CONNECT<br>OFF</button>
+        <div id="sandbox-divider" style="width: 1px; height: 40px; background: #444; margin: 0 2px; display: none;">
+        </div>
+        <button id="sandbox-btn" class="toggle-btn" onclick="toggleSandboxMode()"
+            style="display: none;">SANDBOX<br>OFF</button>
+        <div style="width: 1px; height: 40px; background: #444; margin: 0 2px;"></div>
+        <button id="help-btn" class="toggle-btn" onclick="toggleHelp()">❓ HELP</button>
+        <div style="width: 1px; height: 40px; background: #444; margin: 0 2px;"></div>
+        <button id="start-wave-btn" onclick="startWave()">Start Wave</button>
+    </div>
+
+    <div id="game-over">
+        <h1 style="color: #ff3333; font-size: 3rem;">CONNECTION LOST</h1>
+        <button onclick="location.reload()"
+            style="padding:10px 30px; background:#00f0ff; border:none; font-weight:bold; cursor:pointer;">REBOOT</button>
+    </div>
+    <script src="script.js"></script>
+
+
+</body>
+
+</html>
