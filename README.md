@@ -52,3 +52,8 @@ Defend your central Core from enemy vehicles that spawn in waves. Build towers, 
 - Position towers to cover approach paths
 - Use Rocket towers for groups of enemies
 - Save energy for critical moments
+
+
+### Note
+This project was created with the assistance of AI tools.
+This was an experiment with Gemini and GitHub Copilot.
